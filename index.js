@@ -1,9 +1,18 @@
+/*
+I keep the same sytax here for clarity to the other scripts
+For example I use rawBits to refer to an array of bools
+*/
+
+
 let process = require('process');
 var sieve;
 
 class primeSieve {
+    //Initialization of properties
     rawbits = [];
     sieveSize = 0;
+    
+    //results dictionary stores how many primes from 1*10^1 to 1*10^10
     resultsDict = [
         [
             10, 4
@@ -37,14 +46,16 @@ class primeSieve {
         ],
     ]
 
+    //contructs primeSieve object with default data
     constructor(limit){
         this.sieveSize = limit;
         this.rawbits.length = Math.floor((this.sieveSize + 1) / 2);
-        for( let i = 0; i < Math.floor((this.sieveSize + 1) / 2); i++){
+        for(let i = 0; i < Math.floor((this.sieveSize + 1) / 2); i++){
             this.rawbits[i] = true;
         }
     }
 
+    //Checks if counted primes match known history up to 10,000,000,000 or 1*10^10
     validateResults(){
         for(let i = 0; i < this.resultsDict.length; i++){
             if(this.resultsDict[i][0] == this.sieveSize){
@@ -54,6 +65,7 @@ class primeSieve {
         return false
     }
 
+    //returns if a number is prime or not assuming it isn't even
     getBit(index){
         if(index % 2 == 0){
             return false;
@@ -63,6 +75,7 @@ class primeSieve {
         }
     }
 
+    //sets an entry in the bool array as false if index is an odd number
     clearBit(index){
         if(index % 2 == 0){
             throw {name : "Error message: ", message : "Even number! Check your code bonehead."};
@@ -71,6 +84,7 @@ class primeSieve {
         }
     }
 
+    //Main logic loop that does the brunt of the work
     runSieve(){
         let factor = 3;
         let q = Math.sqrt(this.sieveSize);
@@ -92,6 +106,7 @@ class primeSieve {
         }
     }
 
+    //method that counts calculated primes from the bool array
     countPrimes(){
         let temp = 0;
         for(let i = 0; i < this.rawbits.length; i++){
@@ -102,6 +117,7 @@ class primeSieve {
         return temp;
     }
 
+    //prints the results and does data validation
     printResults(showResults, duration, passes){
         if(showResults){
             process.stdout.write("2, ");
@@ -126,6 +142,8 @@ class primeSieve {
     }
 }
 
+//I encapsulated the main loop within a try and catch to generate an error
+//if something went wrong
 try{
     let tStart = Date.now();
     let passes = 0;
