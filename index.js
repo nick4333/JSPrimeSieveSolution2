@@ -69,7 +69,7 @@ class primeSieve {
         } else{
             this.rawbits[Math.floor(index / 2)] = false;
         }
-}
+    }
 
     runSieve(){
         let factor = 3;
