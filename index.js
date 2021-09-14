@@ -3,9 +3,36 @@ I keep the same sytax here for clarity to the other scripts
 For example I use rawBits to refer to an array of bools
 */
 
-
 let process = require('process');
 var sieve;
+
+const args = process.argv.slice(2);
+
+let loopLimit = args;
+loopLimit = validateArgs(loopLimit);
+
+function validateArgs(limit){
+    limit[0] = Number(limit[0]);
+    limit[1] = limit[1] === true;
+    if(limit[0] > 10000000000){  
+        throw{
+            name: "Error: ",
+            message: "Argument too large to validate results for."
+        }
+    }
+    if(limit[0] == null || limit[0] == undefined){
+        return 1000000
+    }
+
+    if(typeof(limit[1]) != "boolean"){
+        throw{
+            name: "Error: ",
+            message: "Something was messed up, please check Dev."
+        }
+    }
+
+    return limit
+}
 
 class primeSieve {
     //Initialization of properties
@@ -78,7 +105,10 @@ class primeSieve {
     //sets an entry in the bool array as false if index is an odd number
     clearBit(index){
         if(index % 2 == 0){
-            throw {name : "Error message: ", message : "Even number! Check your code bonehead."};
+            throw {
+                name : "Error message: ",
+                message : "Even number! Check your code, bonehead."
+            };
         } else{
             this.rawbits[Math.floor(index / 2)] = false;
         }
@@ -120,6 +150,7 @@ class primeSieve {
     //prints the results and does data validation
     printResults(showResults, duration, passes){
         if(showResults){
+            process.stdout.write("\n");
             process.stdout.write("2, ");
         }
 
@@ -133,29 +164,31 @@ class primeSieve {
             }
         }
         if(!(count == this.countPrimes())){
-            throw {name : "Error message: ", message : "Incorect number of primes counted! " + count + "\n"};
+            throw {
+                name : "Error message: ",
+                message : "Incorect number of primes counted! " + count + "\n"
+            };
         }
-        console.log("\n");
+        console.log("\n")
         console.log("Passes: " + String(passes) + ", Time: " + String(duration/1000) + "s, Avg: " + String(duration/passes/1000) + "s, Limit: " + String(this.sieveSize) + ", Count: " + String(count) + ", Valid: " + String(this.validateResults()));
-        console.log("\n");
         console.log("davepl;" + String(passes) + ";" + String(duration) + ";1;algorithm=base,faithful=yes");
+        console.log("\n")
     }
 }
 
-//I encapsulated the main loop within a try and catch to generate an error
-//if something went wrong
+//I encapsulated the main loop within a try and catch to generate an error if something went wrong
 try{
     let tStart = Date.now();
     let passes = 0;
 
     while(Date.now() - tStart < 5000){
-        sieve = new primeSieve(1000000);
+        sieve = new primeSieve(loopLimit[0]);
         sieve.runSieve();
         passes++;
     }
 
     tD = Date.now() - tStart;
-    sieve.printResults(false, tD, passes);
+    sieve.printResults(loopLimit[1], tD, passes);
 } catch(e){
     console.error(e.name + e.message);
 }
