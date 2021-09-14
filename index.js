@@ -8,12 +8,16 @@ var sieve;
 
 const args = process.argv.slice(2);
 
-let loopLimit = args;
-loopLimit = validateArgs(loopLimit);
+let loopLimits = args;
+loopLimits = validateArgs(loopLimits);
 
+//Validates command line arguments as valid
 function validateArgs(limit){
     limit[0] = Number(limit[0]);
+    
+    //I use limit[1] = limit[1] === true because any string other than an empty string, "", returns from Boolean() as true
     limit[1] = limit[1] === true;
+    
     if(limit[0] > 10000000000){  
         throw{
             name: "Error: ",
@@ -182,13 +186,13 @@ try{
     let passes = 0;
 
     while(Date.now() - tStart < 5000){
-        sieve = new primeSieve(loopLimit[0]);
+        sieve = new primeSieve(loopLimits[0]);
         sieve.runSieve();
         passes++;
     }
 
     tD = Date.now() - tStart;
-    sieve.printResults(loopLimit[1], tD, passes);
+    sieve.printResults(loopLimits[1], tD, passes);
 } catch(e){
     console.error(e.name + e.message);
 }
